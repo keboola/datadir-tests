@@ -1,30 +1,17 @@
-# my-component
+# Funcational tests scaffolding
 
-[![Build Status](https://travis-ci.org/keboola/my-component.svg?branch=master)](https://travis-ci.org/keboola/my-component)
-
-> Fill in description
+[![Build Status](https://travis-ci.org/keboola/functional-tests-scaffolding.svg?branch=master)](https://travis-ci.org/keboola/functional-tests-scaffolding)
 
 # Usage
 
-> fill in usage instructions
+`vendor/bin/functional`
 
 ## Development
  
 Clone this repository and init the workspace with following command:
 
 ```
-git clone https://github.com/keboola/my-component
-cd my-component
-docker-compose build
-docker-compose run --rm dev composer install --no-scripts
+git clone https://github.com/keboola/functional-tests-scaffolding
+cd functional-tests-scaffolding
+docker-compose run --rm dev /bin/bash
 ```
-
-Run the test suite using this command:
-
-```
-docker-compose run --rm dev composer tests
-```
- 
-# Integration
-
-For information about deployment and integration with KBC, please refer to the [deployment section of developers documentation](https://developers.keboola.com/extend/component/deployment/) 
