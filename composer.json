@@ -14,7 +14,7 @@
         "phpstan/phpstan-shim": "^0.9.2"
     },
     "bin": [
-        "src/functional.php"
+        "src/functional"
     ],
     "scripts": {
         "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
