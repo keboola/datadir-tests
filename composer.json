@@ -3,7 +3,8 @@
     "description": "Tool for functional testing of Keboola Connection components",
     "license": "MIT",
     "require": {
-        "PHP": "^7.1"
+        "PHP": "^7.1",
+        "symfony/process": "^4.0"
     },
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "^1.0",
