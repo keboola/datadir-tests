@@ -1,0 +1,88 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Keboola\Temp\Temp;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
+
+require_once 'vendor/autoload.php';
+
+if ($argc !== 2) {
+    print 'Please supply tests directory as first parameter' . PHP_EOL;
+    exit(2);
+}
+
+$testFolder = rtrim(array_pop($argv), DIRECTORY_SEPARATOR);
+
+$finder = new Finder();
+$finder->directories()->sortByName()->in($testFolder)->depth(0);
+if (count($finder) === 0) {
+    print 'No tests to run' . PHP_EOL;
+    exit(2);
+}
+
+foreach ($finder as $testSuite) {
+    printf(
+        PHP_EOL . 'Test "%s"' . PHP_EOL,
+        $testSuite->getBasename()
+    );
+    $temp = new Temp($testSuite->getBasename());
+    $temp->initRunFolder();
+
+    $fs = new Filesystem();
+    $fs->mirror($testSuite->getPathname() . '/source/data', $temp->getTmpFolder());
+
+    $fs->mkdir($temp->getTmpFolder() . '/in/tables', 0777);
+    $fs->mkdir($temp->getTmpFolder() . '/in/files', 0777);
+    $fs->mkdir($temp->getTmpFolder() . '/out/tables', 0777);
+    $fs->mkdir($temp->getTmpFolder() . '/out/files', 0777);
+
+    $runCommand = "KBC_DATADIR={$temp->getTmpFolder()} php /code/src/run.php";
+    $runProcess = new Process($runCommand);
+    $runProcess->run();
+    if (($runProcess->getExitCode() > 0)) {
+        $isExpectedToFail = !file_exists($testSuite->getPathname() . '/expected');
+        if ($isExpectedToFail) {
+            printf(
+                '✓ Execution failed as expected (%d)' . PHP_EOL,
+                $runProcess->getExitCode()
+            );
+            if ($runProcess->getOutput()) {
+                print $runProcess->getOutput() . PHP_EOL;
+            }
+        } else {
+            printf(
+                '✗ Execution failed unexpectedly (%d)' . PHP_EOL,
+                $runProcess->getExitCode()
+            );
+            if ($runProcess->getOutput()) {
+                print $runProcess->getOutput() . PHP_EOL;
+            }
+            if ($runProcess->getErrorOutput()) {
+                print $runProcess->getErrorOutput() . PHP_EOL;
+            }
+            exit(1);
+        }
+    } else {
+        $diffCommand = sprintf(
+            'diff --exclude=.gitkeep --ignore-all-space --recursive %s %s',
+            $testSuite->getPathname() . '/expected/data/out ',
+            $temp->getTmpFolder() . '/out'
+        );
+        $diffProcess = new Process($diffCommand);
+        $diffProcess->run();
+        if ($diffProcess->getExitCode() > 0) {
+            printf('✗ Failed' . PHP_EOL);
+            if ($diffProcess->getOutput()) {
+                print $diffProcess->getOutput() . PHP_EOL;
+            }
+            exit(1);
+        } else {
+            printf('✓ Suceeded' . PHP_EOL);
+        }
+    }
+}
+printf(PHP_EOL . '✓ All tests passed' . PHP_EOL);

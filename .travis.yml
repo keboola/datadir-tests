@@ -1,0 +1,12 @@
+sudo: required
+
+language: bash
+
+services:
+  - docker
+
+before_script:
+  - export APP_IMAGE=keboola-functional-tests-scaffolding
+  - docker -v
+  - docker build -t $APP_IMAGE .
+  - docker run $APP_IMAGE composer ci
