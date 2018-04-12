@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "02741cdf4ca0c6529b840bc16a8494c9",
+    "content-hash": "277191517361c19713f631ad161f965b",
     "packages": [
         {
             "name": "keboola/php-temp",

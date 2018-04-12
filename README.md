@@ -1,6 +1,6 @@
 # Funcational tests scaffolding
 
-[![Build Status](https://travis-ci.org/keboola/functional-tests-scaffolding.svg?branch=master)](https://travis-ci.org/keboola/functional-tests-scaffolding)
+[![Build Status](https://travis-ci.org/keboola/datadir-tests.svg?branch=master)](https://travis-ci.org/keboola/datadir-tests)
 
 # Usage
 
@@ -23,7 +23,7 @@ In the tests folder create a directory structure mimicking the directory structu
 
 Then run the script with path to the tests directory.
 
-`vendor/bin/functional /path/to/tests`
+`vendor/bin/datadir-tests /path/to/tests`
 
 Result:
 
@@ -46,8 +46,8 @@ Invalid configuration for path "root.parameters.source_encoding": Source encodin
 Clone this repository and init the workspace with following command:
 
 ```
-git clone https://github.com/keboola/functional-tests-scaffolding
-cd functional-tests-scaffolding
+git clone https://github.com/keboola/datadir-tests
+cd datadir-tests
 docker-compose run --rm dev /bin/bash
 $ composer install
 $ composer ci

@@ -1,5 +1,5 @@
 {
-    "name": "keboola/functional-tests-scaffolding",
+    "name": "keboola/datadir-tests",
     "description": "Tool for functional testing of Keboola Connection components",
     "license": "MIT",
     "require": {
@@ -15,7 +15,7 @@
         "phpstan/phpstan-shim": "^0.9.2"
     },
     "bin": [
-        "src/functional"
+        "src/datadir-tests"
     ],
     "scripts": {
         "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
