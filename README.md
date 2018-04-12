@@ -23,11 +23,17 @@ In the tests folder create a directory structure mimicking the directory structu
 
 Then run the script with path to the tests directory.
 
-`vendor/bin/datadir-tests /path/to/tests`
+`vendor/bin/datadir-tests` 
+
+Or with custom tests directory and tested script:
+
+`vendor/bin/datadir-tests /tests/functional /code/src/run.php`
 
 Result:
 
 ```
+Testing "src/run.php" with tests from "tests/functional"
+
 Test "test-name"
 ✓ Suceeded
 ```

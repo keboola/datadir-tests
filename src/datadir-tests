@@ -10,9 +10,11 @@ use Symfony\Component\Process\Process;
 
 require_once 'vendor/autoload.php';
 
-if ($argc == 2 && (in_array($argv[1], ['-h', '--help']))) {
+if ($argc == 2 && (in_array($argv[1], ['-h', '--help', '-?']))) {
     print 'Usage:' . PHP_EOL;
-    print "\t" . 'datadir-tests /path/to/tests script-to-run.php' . PHP_EOL . PHP_EOL;
+    print "\t" . 'datadir-tests [path to tests directory] [script to test]' . PHP_EOL . PHP_EOL;
+    print 'Example:' . PHP_EOL;
+    print "\t" . 'datadir-tests /path/to/tests script-to-test.php' . PHP_EOL . PHP_EOL;
     print 'All parameters are optional. Default values are "tests/functional" and "src/run.php"'  . PHP_EOL . PHP_EOL;
     exit(2);
 }
