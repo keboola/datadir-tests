@@ -10,12 +10,32 @@ use Symfony\Component\Process\Process;
 
 require_once 'vendor/autoload.php';
 
-if ($argc !== 2) {
-    print 'Please supply tests directory as first parameter' . PHP_EOL;
+if ($argc == 2 && (in_array($argv[1], ['-h', '--help', '-?']))) {
+    print 'Usage:' . PHP_EOL;
+    print "\t" . 'datadir-tests [path to tests directory] [script to test]' . PHP_EOL . PHP_EOL;
+    print 'Example:' . PHP_EOL;
+    print "\t" . 'datadir-tests /path/to/tests script-to-test.php' . PHP_EOL . PHP_EOL;
+    print 'All parameters are optional. Default values are "tests/functional" and "src/run.php"'  . PHP_EOL . PHP_EOL;
     exit(2);
 }
 
-$testFolder = rtrim(array_pop($argv), DIRECTORY_SEPARATOR);
+$fs = new Filesystem();
+
+$script = "src/run.php";
+if (count($argv) === 3) {
+    $script = array_pop($argv);
+    if (!$fs->exists($script)) {
+        printf('Script "%s" does not exist' . PHP_EOL, $script);
+        exit(2);
+    }
+}
+
+$testFolder = 'tests/functional';
+if (count($argv) === 2) {
+    $testFolder = rtrim(array_pop($argv), DIRECTORY_SEPARATOR);
+}
+
+printf('Testing "%s" with tests from "%s"' . PHP_EOL, $script, $testFolder);
 
 $finder = new Finder();
 $finder->directories()->sortByName()->in($testFolder)->depth(0);
@@ -32,7 +52,6 @@ foreach ($finder as $testSuite) {
     $temp = new Temp($testSuite->getBasename());
     $temp->initRunFolder();
 
-    $fs = new Filesystem();
     $fs->mirror($testSuite->getPathname() . '/source/data', $temp->getTmpFolder());
 
     $fs->mkdir($temp->getTmpFolder() . '/in/tables', 0777);
@@ -40,7 +59,7 @@ foreach ($finder as $testSuite) {
     $fs->mkdir($temp->getTmpFolder() . '/out/tables', 0777);
     $fs->mkdir($temp->getTmpFolder() . '/out/files', 0777);
 
-    $runCommand = "KBC_DATADIR={$temp->getTmpFolder()} php /code/src/run.php";
+    $runCommand = "KBC_DATADIR={$temp->getTmpFolder()} php " . $script;
     $runProcess = new Process($runCommand);
     $runProcess->run();
     if (($runProcess->getExitCode() > 0)) {
