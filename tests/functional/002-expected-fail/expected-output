@@ -1,0 +1,6 @@
+Testing "/code/tests/functional/dummy-app.php" with tests from "/code/tests/functional/002-expected-fail"
+
+Test "functional"
+✓ Execution failed as expected (1)
+
+✓ All tests passed
