@@ -1,0 +1,4 @@
+Testing "/code/tests/functional/dummy-app.php" with tests from "/code/tests/functional/004-unexpected-success"
+
+Test "functional"
+✗ Execution succeeded unexpectedly (0)
