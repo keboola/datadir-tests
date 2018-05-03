@@ -62,30 +62,38 @@ foreach ($finder as $testSuite) {
     $runCommand = "KBC_DATADIR={$temp->getTmpFolder()} php " . $script;
     $runProcess = new Process($runCommand);
     $runProcess->run();
-    if (($runProcess->getExitCode() > 0)) {
-        $isExpectedToFail = !file_exists($testSuite->getPathname() . '/expected');
-        if ($isExpectedToFail) {
-            printf(
-                '✓ Execution failed as expected (%d)' . PHP_EOL,
-                $runProcess->getExitCode()
-            );
-            if ($runProcess->getOutput()) {
-                print $runProcess->getOutput() . PHP_EOL;
-            }
-        } else {
-            printf(
-                '✗ Execution failed unexpectedly (%d)' . PHP_EOL,
-                $runProcess->getExitCode()
-            );
-            if ($runProcess->getOutput()) {
-                print $runProcess->getOutput() . PHP_EOL;
-            }
-            if ($runProcess->getErrorOutput()) {
-                print $runProcess->getErrorOutput() . PHP_EOL;
-            }
-            exit(1);
+    $isExpectedToFail = !file_exists($testSuite->getPathname() . '/expected');
+    $didFail = $runProcess->getExitCode() > 0;
+    if ($isExpectedToFail && $didFail) {
+        printf(
+            '✓ Execution failed as expected (%d)' . PHP_EOL,
+            $runProcess->getExitCode()
+        );
+        if ($runProcess->getOutput()) {
+            print $runProcess->getOutput() . PHP_EOL;
         }
-    } else {
+    } elseif ($isExpectedToFail && !$didFail) {
+        printf(
+            '✗ Execution succeeded unexpectedly (%d)' . PHP_EOL,
+            $runProcess->getExitCode()
+        );
+        if ($runProcess->getOutput()) {
+            print $runProcess->getOutput() . PHP_EOL;
+        }
+        exit(1);
+    } elseif (!$isExpectedToFail && $didFail) {
+        printf(
+            '✗ Execution failed unexpectedly (%d)' . PHP_EOL,
+            $runProcess->getExitCode()
+        );
+        if ($runProcess->getOutput()) {
+            print $runProcess->getOutput() . PHP_EOL;
+        }
+        if ($runProcess->getErrorOutput()) {
+            print $runProcess->getErrorOutput() . PHP_EOL;
+        }
+        exit(1);
+    } elseif (!$isExpectedToFail && !$didFail) {
         $diffCommand = sprintf(
             'diff --exclude=.gitkeep --ignore-all-space --recursive %s %s',
             $testSuite->getPathname() . '/expected/data/out ',
