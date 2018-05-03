@@ -22,10 +22,12 @@
         "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
         "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
         "phplint": "parallel-lint -j 10 --exclude vendor .",
+        "tests-functional": "@php tests/functional/runner.php",
         "build": [
             "@phplint",
             "@phpcs",
-            "@phpstan"
+            "@phpstan",
+            "@tests-functional"
         ],
         "ci": [
             "@composer validate --strict",
