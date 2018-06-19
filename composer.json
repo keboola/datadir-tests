@@ -5,6 +5,7 @@
     "require": {
         "PHP": "^7.1",
         "keboola/php-temp": "^1.0",
+        "phpunit/phpunit": "^7.0",
         "symfony/filesystem": "^4.0",
         "symfony/finder": "^4.0",
         "symfony/process": "^4.0"
@@ -14,20 +15,17 @@
         "keboola/coding-standard": "^2.0",
         "phpstan/phpstan-shim": "^0.9.2"
     },
-    "bin": [
-        "src/datadir-tests"
-    ],
     "scripts": {
         "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",
         "phpcs": "phpcs -n --ignore=vendor --extensions=php .",
         "phpcbf": "phpcbf -n --ignore=vendor --extensions=php .",
         "phplint": "parallel-lint -j 10 --exclude vendor .",
-        "tests-functional": "@php tests/functional/runner.php",
+        "tests": "phpunit",
         "build": [
             "@phplint",
             "@phpcs",
             "@phpstan",
-            "@tests-functional"
+            "@tests"
         ],
         "ci": [
             "@composer validate --strict",
@@ -37,6 +35,15 @@
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Keboola\\DatadirTests\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Keboola\\DatadirTests\\Tests\\": "tests/phpunit"
+        }
     }
-
 }
