@@ -1,8 +1,12 @@
-# Funcational tests scaffolding
+# Datadir tests
 
 [![Build Status](https://travis-ci.org/keboola/datadir-tests.svg?branch=master)](https://travis-ci.org/keboola/datadir-tests)
 
 # Usage
+
+Require this package in you component
+
+`composer require keboola/datadir-tests`
 
 In the tests folder create a directory structure mimicking the directory structure in production:
 ```
@@ -21,31 +25,68 @@ In the tests folder create a directory structure mimicking the directory structu
   └─config.json
 ```
 
-Then run the script with path to the tests directory.
+Then create empty `/path/to/tests/DatadirTest` that extends `Keboola\DatadirTests\DatadirTestCase`:
 
-`vendor/bin/datadir-tests` 
+```php
+<?php
 
-Or with custom tests directory and tested script:
+declare(strict_types=1);
 
-`vendor/bin/datadir-tests /tests/functional /code/src/run.php`
+namespace MyComponent\Tests;
 
-Result:
+use Keboola\DatadirTests\DatadirTestCase;
 
-```
-Testing "src/run.php" with tests from "tests/functional"
+class DatadirTest extends DatadirTestCase
+{
+}
 
-Test "test-name"
-✓ Suceeded
-```
+``` 
 
-The script then executes `/code/src/run.php` with `KBC_DATADIR` set to the test directory. There can be any number of test directories and the script automatically discovers them. 
+run it using 
 
-If there is no `expected` directory in the test's directory, the script expects `run.php` to fail:
-```
-Test "failing-test-name"
-✓ Execution failed as expected (1)
-Invalid configuration for path "root.parameters.source_encoding": Source encoding is not valid
-```
+`vendor/bin/phpunit /path/to/tests/DatadirTest.php`
+
+
+The script then executes `/code/src/run.php` with `KBC_DATADIR` set to the test directory. There can be any number of test directories and the script automatically discovers them using `DatadirTestsFromDirectoryProvider`. You can supply your own provider that implements `DatadirTestsProviderInterface`. It needs to return array of arrays (!) of `DatadirTestSpecificationInterface` instances. 
+
+## What is `DatadirTestSpecificationInterface`?
+
+`DatadirTestSpecificationInterface` contains all the information you need to create and assert a datadir test:
+ * `getSourceDatadirDirectory(): ?string`: returns the directory that initializes the test. You should prepare `config.json` and potentially also `/in/files` or `/in/tables` contents. That directory is mirrored to the temporary directory that the test is ran in. `null` means just barebones directory structure is created and you need to create `config.json`, etc. in the temporary directory yourself.  
+ * `getExpectedReturnCode(): ?int`: expected exit code, `null` means "non-zero"
+ * `getExpectedStdout(): ?string`: if supplied, whole stdout output is checked against supplied value 
+ * `getExpectedStderr(): ?string`: if supplied, whole stderr output is checked against supplied value
+ * `getExpectedOutDirectory(): ?string`: if supplied, the temporary directory's **`out` directory** is compared with this directory after the component is ran. Any differences result in test failure.
+ 
+ ## Custom test
+ 
+ Just add a test method and reuse the existing helper methods in `AbstractDatadirTestCase`. 
+ 
+ ```php
+public function testInvalidFile(): void
+{
+    // create specification manually
+    $specification = new DatadirTestSpecification(
+        __DIR__ . '/columns-auto/source/data',
+        0,
+        null,
+        null,
+        __DIR__ . '/columns-auto/expected/data/out'
+    );
+    
+    // create temporary directory
+    $tempDatadir = $this->getTempDatadir($specification);
+    
+    // modify temporary directory however you see fit
+    file_put_contents($tempDatadir->getTmpFolder() . '/config.json', '{"parameters": []}');
+    
+    // run the script
+    $process = $this->runScript($tempDatadir->getTmpFolder());
+    
+    // assert specification
+    $this->assertMatchesSpecification($specification, $process, $tempDatadir->getTmpFolder());
+}
+ ```
 
 ## Development
  
