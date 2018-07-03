@@ -67,20 +67,23 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         $sourceDatadirDirectory = $workingDirectory . '/source/data';
         $expectedStdout = null;
         $expectedStderr = null;
-        $expectedReturnCodeFile = $workingDirectory . '/return-code';
+        $expectedReturnCodeFile = $workingDirectory . '/expected-code';
         $expectedReturnCode = null;
         $expectedOutputDirectory = null;
         $outTemplateDir = $workingDirectory . '/expected/data/out';
-        if (file_exists($outTemplateDir)) {
-            $expectedReturnCode = 0;
-            $expectedOutputDirectory = $outTemplateDir;
-        }
 
         if (file_exists($expectedReturnCodeFile)) {
             $returnCode = trim(file_get_contents($expectedReturnCodeFile));
-            if (preg_match('/^[012]$/', $returnCode)) {
+            if (preg_match('~^[012]$~', $returnCode)) {
                 $expectedReturnCode = (int) $returnCode;
+            } else {
+                throw new \InvalidArgumentException($name . ': Expecting invalid return code. Possible codes are: 0, 1, 2.');
             }
+        }
+
+        if (is_null($expectedReturnCode) && file_exists($outTemplateDir)) {
+            $expectedReturnCode = 0;
+            $expectedOutputDirectory = $outTemplateDir;
         }
 
         $this->datapoints[$name] = [
