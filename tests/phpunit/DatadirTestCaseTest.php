@@ -88,6 +88,42 @@ class DatadirTestCaseTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    public function testExpectedUserError(): void
+    {
+        $test = $this->getTestCase('005-expected-user-error');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
+    public function testExpectedInternalError(): void
+    {
+        $test = $this->getTestCase('006-expected-internal-error');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
+    public function testExpectedUserErrorWithOutputFolder(): void
+    {
+        $test = $this->getTestCase('007-expected-user-error-with-output-folder');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
     protected function getTestCase(string $path): DatadirTestCase
     {
         $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider(__DIR__ . '/../functional/' . $path);

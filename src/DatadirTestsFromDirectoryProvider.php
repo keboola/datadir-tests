@@ -81,8 +81,10 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
             }
         }
 
-        if (is_null($expectedReturnCode) && file_exists($outTemplateDir)) {
-            $expectedReturnCode = 0;
+        if (file_exists($outTemplateDir)) {
+            if (is_null($expectedReturnCode)) {
+                $expectedReturnCode = 0;
+            }
             $expectedOutputDirectory = $outTemplateDir;
         }
 
