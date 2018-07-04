@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\DatadirTests\Tests;
 
+use InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestsFromDirectoryProvider;
 use PHPUnit\Framework\TestCase;
@@ -162,6 +163,13 @@ class DatadirTestCaseTest extends TestCase
 
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
+    }
+
+    public function testInvalidExpectedExitCode(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('functional: Expecting invalid return code. Possible codes are: 0, 1, 2.');
+        $this->getTestCase('010-invalid-expected-exit-code');
     }
 
     protected function getTestCase(string $path): DatadirTestCase
