@@ -168,7 +168,7 @@ class DatadirTestCaseTest extends TestCase
     public function testInvalidExpectedExitCode(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('functional: Expecting invalid return code. Possible codes are: 0, 1, 2.');
+        $this->expectExceptionMessage('functional: Expecting invalid return code (7). Possible codes are: 0, 1, 2.');
         $this->getTestCase('010-invalid-expected-exit-code');
     }
 

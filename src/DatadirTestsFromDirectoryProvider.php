@@ -77,7 +77,11 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
             if (preg_match('~^[012]$~', $returnCode)) {
                 $expectedReturnCode = (int) $returnCode;
             } else {
-                throw new \InvalidArgumentException($name . ': Expecting invalid return code. Possible codes are: 0, 1, 2.');
+                throw new \InvalidArgumentException(sprintf(
+                    '%s: Expecting invalid return code (%s). Possible codes are: 0, 1, 2.',
+                    $name,
+                    $returnCode
+                ));
             }
         }
 
