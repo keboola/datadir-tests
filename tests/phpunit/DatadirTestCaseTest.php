@@ -165,6 +165,26 @@ class DatadirTestCaseTest extends TestCase
         $this->assertCount(1, $result);
     }
 
+    public function testUnexpectedSuccessWithExplicitlyExpectedError(): void
+    {
+        $test = $this->getTestCase('011-unexpected-success-with-explicitly-expected-exit-code');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(1, $result->failureCount());
+        /** @var TestFailure[] $failures */
+        $failures = $result->failures();
+        /** @var TestFailure $failure */
+        $failure = $failures[0];
+        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected exit code should have been 1');
+        $this->assertContains('+0', $failure->getExceptionAsString(), 'Actual exit code should have been 0');
+
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
     public function testInvalidExpectedExitCode(): void
     {
         $this->expectException(InvalidArgumentException::class);
