@@ -12,6 +12,7 @@ In the tests folder create a directory structure mimicking the directory structu
 ```
 /path/to/tests
 └─test-name
+  ├─expected-code
   ├─expected
   │ └─data
   │   └─out
@@ -48,6 +49,8 @@ run it using
 
 
 The script then executes `/code/src/run.php` with `KBC_DATADIR` set to the test directory. There can be any number of test directories and the script automatically discovers them using `DatadirTestsFromDirectoryProvider`. You can supply your own provider that implements `DatadirTestsProviderInterface`. It needs to return array of arrays (!) of `DatadirTestSpecificationInterface` instances. 
+
+When the `expected-code` file is present, the return code of execution is checked. The file contains a single number number - the execution code, allowed values are `0`, `1`, `2`.
 
 ## What is `DatadirTestSpecificationInterface`?
 
