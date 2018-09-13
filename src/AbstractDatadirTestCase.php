@@ -178,6 +178,30 @@ abstract class AbstractDatadirTestCase extends TestCase
         );
     }
 
+    protected function runCommonTest(
+        string $testDirectory,
+        array $configuration,
+        int $expectedReturnCode,
+        ?string $expectedStdout,
+        ?string $expectedStderr
+    ): void {
+        $specification = new DatadirTestSpecification(
+            $testDirectory . '/source/data',
+            $expectedReturnCode,
+            $expectedStdout,
+            $expectedStderr,
+            $testDirectory . '/expected/data/out'
+        );
+
+        $tempFolder = $this->getTempDatadir($specification)->getTmpFolder();
+        file_put_contents(
+            $tempFolder . '/config.json',
+            json_encode($configuration, JSON_PRETTY_PRINT)
+        );
+        $process = $this->runScript($tempFolder);
+        $this->assertMatchesSpecification($specification, $process, $tempFolder);
+    }
+
     protected function runScript(string $datadirPath): Process
     {
         $fs = new Filesystem();
