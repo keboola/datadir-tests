@@ -178,7 +178,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         );
     }
 
-    protected function runCommonTest(
+    protected function runTestWithCustomConfiguration(
         string $testDirectory,
         array $configuration,
         int $expectedReturnCode,
