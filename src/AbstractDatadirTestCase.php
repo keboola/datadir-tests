@@ -193,7 +193,8 @@ abstract class AbstractDatadirTestCase extends TestCase
             $testDirectory . '/expected/data/out'
         );
 
-        $tempFolder = $this->getTempDatadir($specification)->getTmpFolder();
+        $tempDatadir = $this->getTempDatadir($specification);
+        $tempFolder = $tempDatadir->getTmpFolder();
         file_put_contents(
             $tempFolder . '/config.json',
             json_encode($configuration, JSON_PRETTY_PRINT)
