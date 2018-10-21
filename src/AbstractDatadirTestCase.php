@@ -19,6 +19,9 @@ abstract class AbstractDatadirTestCase extends TestCase
     /** @var string */
     protected $testFileDir;
 
+    /** @var Temp */
+    protected $temp;
+
     public function __construct(
         ?string $name = null,
         array $data = [],
@@ -27,6 +30,11 @@ abstract class AbstractDatadirTestCase extends TestCase
         $reflectionClass = new ReflectionClass(static::class);
         $this->testFileDir = dirname($reflectionClass->getFileName());
         parent::__construct($name, $data, $dataName);
+    }
+
+    public function setUp(): void
+    {
+        $this->temp = new Temp();
     }
 
     /**
@@ -108,18 +116,17 @@ abstract class AbstractDatadirTestCase extends TestCase
     {
         $fs = new Filesystem();
 
-        $temp = new Temp();
-        $temp->initRunFolder();
+        $this->temp->initRunFolder();
 
         if ($specification->getSourceDatadirDirectory() !== null) {
-            $fs->mirror($specification->getSourceDatadirDirectory(), $temp->getTmpFolder());
+            $fs->mirror($specification->getSourceDatadirDirectory(), $this->temp->getTmpFolder());
         }
 
-        $fs->mkdir($temp->getTmpFolder() . '/in/tables', 0777);
-        $fs->mkdir($temp->getTmpFolder() . '/in/files', 0777);
-        $fs->mkdir($temp->getTmpFolder() . '/out/tables', 0777);
-        $fs->mkdir($temp->getTmpFolder() . '/out/files', 0777);
-        return $temp;
+        $fs->mkdir($this->temp->getTmpFolder() . '/in/tables', 0777);
+        $fs->mkdir($this->temp->getTmpFolder() . '/in/files', 0777);
+        $fs->mkdir($this->temp->getTmpFolder() . '/out/tables', 0777);
+        $fs->mkdir($this->temp->getTmpFolder() . '/out/files', 0777);
+        return $this->temp;
     }
 
     protected function assertMatchesSpecification(
@@ -193,7 +200,8 @@ abstract class AbstractDatadirTestCase extends TestCase
             $testDirectory . '/expected/data/out'
         );
 
-        $tempFolder = $this->getTempDatadir($specification)->getTmpFolder();
+        $tempDatadir = $this->getTempDatadir($specification);
+        $tempFolder = $tempDatadir->getTmpFolder();
         file_put_contents(
             $tempFolder . '/config.json',
             json_encode($configuration, JSON_PRETTY_PRINT)
