@@ -32,7 +32,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         parent::__construct($name, $data, $dataName);
     }
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->temp = new Temp();
     }
