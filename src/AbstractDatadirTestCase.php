@@ -230,6 +230,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         $runProcess->setEnv([
             'KBC_DATADIR' => $datadirPath,
         ]);
+        $runProcess->setTimeout(0);
         $runProcess->run();
         return $runProcess;
     }
