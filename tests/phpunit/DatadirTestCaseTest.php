@@ -19,7 +19,6 @@ class DatadirTestCaseTest extends TestCase
         $test = $this->getTestCase('001-successful');
         $result = $test->run();
 
-        /** @var TestFailure[] $errors */
         $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
 
         $this->assertEquals(0, $result->errorCount());
