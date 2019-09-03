@@ -7,6 +7,7 @@ namespace Keboola\DatadirTests\Tests;
 use InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestsFromDirectoryProvider;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestFailure;
 use PHPUnit\Runner\BaseTestRunner;
@@ -190,6 +191,13 @@ class DatadirTestCaseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('functional: Expecting invalid return code (7). Possible codes are: 0, 1, 2.');
         $this->getTestCase('010-invalid-expected-exit-code');
+    }
+
+    public function testFailsIfNeitherFolderNorCodeIsExpected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('functional: At least one of "expected/out/data" folder or "expected-code" file must exist');
+        $this->getTestCase('012-neither-code-or-folder');
     }
 
     protected function getTestCase(string $path): DatadirTestCase
