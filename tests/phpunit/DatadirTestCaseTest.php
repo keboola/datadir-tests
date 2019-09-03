@@ -82,8 +82,9 @@ class DatadirTestCaseTest extends TestCase
         /** @var TestFailure[] $failures */
         $failures = $result->failures();
         $failure = $failures[0];
-        $this->assertContains('Exit code should have been non-zero', $failure->exceptionMessage());
-        $this->assertContains('Failed asserting that 0 is not identical to 0', $failure->exceptionMessage());
+        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected should be 1');
+        $this->assertContains('+0', $failure->getExceptionAsString(), 'Actual should be 0');
 
         $this->assertEquals(0, $result->skippedCount());
 
