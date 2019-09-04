@@ -7,6 +7,7 @@ namespace Keboola\DatadirTests\Tests;
 use InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestsFromDirectoryProvider;
+use LogicException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\TestFailure;
 use PHPUnit\Runner\BaseTestRunner;
@@ -18,7 +19,6 @@ class DatadirTestCaseTest extends TestCase
         $test = $this->getTestCase('001-successful');
         $result = $test->run();
 
-        /** @var TestFailure[] $errors */
         $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
 
         $this->assertEquals(0, $result->errorCount());
@@ -81,8 +81,9 @@ class DatadirTestCaseTest extends TestCase
         /** @var TestFailure[] $failures */
         $failures = $result->failures();
         $failure = $failures[0];
-        $this->assertContains('Exit code should have been non-zero', $failure->exceptionMessage());
-        $this->assertContains('Failed asserting that 0 is not identical to 0', $failure->exceptionMessage());
+        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected should be 1');
+        $this->assertContains('+0', $failure->getExceptionAsString(), 'Actual should be 0');
 
         $this->assertEquals(0, $result->skippedCount());
 
@@ -190,6 +191,13 @@ class DatadirTestCaseTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('functional: Expecting invalid return code (7). Possible codes are: 0, 1, 2.');
         $this->getTestCase('010-invalid-expected-exit-code');
+    }
+
+    public function testFailsIfNeitherFolderNorCodeIsExpected(): void
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('functional: At least one of "expected/out/data" folder or "expected-code" file must exist');
+        $this->getTestCase('012-neither-code-or-folder');
     }
 
     protected function getTestCase(string $path): DatadirTestCase

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DatadirTests;
 
 use Keboola\DatadirTests\Exception\DatadirTestsException;
+use LogicException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -90,6 +91,13 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
                 $expectedReturnCode = 0;
             }
             $expectedOutputDirectory = $outTemplateDir;
+        }
+
+        if ($expectedOutputDirectory === null && $expectedReturnCode === null) {
+            throw new LogicException(sprintf(
+                '%s: At least one of "expected/out/data" folder or "expected-code" file must exist',
+                $name
+            ));
         }
 
         $this->datapoints[$name] = [
