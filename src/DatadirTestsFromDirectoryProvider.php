@@ -88,7 +88,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         }
 
         if (file_exists($expectedStderrFile)) {
-            $expectedStderr = trim(file_get_contents($expectedStderrFile));
+            $expectedStderr = file_get_contents($expectedStderrFile);
         }
 
         if (file_exists($outTemplateDir)) {
