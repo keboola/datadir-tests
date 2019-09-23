@@ -200,6 +200,47 @@ class DatadirTestCaseTest extends TestCase
         $this->getTestCase('012-neither-code-or-folder');
     }
 
+    public function testExpectedStderr(): void
+    {
+        $test = $this->getTestCase('013-expected-stderr');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
+    public function testInvalidExpectedStderr(): void
+    {
+        $test = $this->getTestCase('014-invalid-expected-stderr');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(1, $result->failureCount());
+
+        /** @var TestFailure[] $failures */
+        $failures = $result->failures();
+        /** @var TestFailure $failure */
+        $failure = $failures[0];
+
+        $expectedOutput = <<<EOT
+Failed asserting stderr output
+Failed asserting that two strings are identical.
+--- Expected
++++ Actual
+@@ @@
+-'Something else fails'
++'Something fails'
+
+EOT;
+        $this->assertEquals($expectedOutput, $failure->getExceptionAsString());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
     protected function getTestCase(string $path): DatadirTestCase
     {
         $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider(__DIR__ . '/../functional/' . $path);

@@ -68,6 +68,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         $sourceDatadirDirectory = $workingDirectory . '/source/data';
         $expectedStdout = null;
         $expectedStderr = null;
+        $expectedStderrFile = $workingDirectory . '/expected-stderr';
         $expectedReturnCodeFile = $workingDirectory . '/expected-code';
         $expectedReturnCode = null;
         $expectedOutputDirectory = null;
@@ -84,6 +85,10 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
                     $returnCode
                 ));
             }
+        }
+
+        if (file_exists($expectedStderrFile)) {
+            $expectedStderr = trim(file_get_contents($expectedStderrFile));
         }
 
         if (file_exists($outTemplateDir)) {
