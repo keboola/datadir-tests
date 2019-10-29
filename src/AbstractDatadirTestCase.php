@@ -147,7 +147,7 @@ abstract class AbstractDatadirTestCase extends TestCase
             );
         }
         if ($specification->getExpectedStderr() !== null) {
-            $this->assertSame(
+            $this->assertContains(
                 $specification->getExpectedStderr(),
                 $runProcess->getErrorOutput(),
                 'Failed asserting stderr output'

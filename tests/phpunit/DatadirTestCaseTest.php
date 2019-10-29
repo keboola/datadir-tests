@@ -228,14 +228,11 @@ class DatadirTestCaseTest extends TestCase
 
         $expectedOutput = <<<EOT
 Failed asserting stderr output
-Failed asserting that two strings are identical.
---- Expected
-+++ Actual
-@@ @@
--'Something else fails'
-+'Something fails'
+Failed asserting that 'Something fails' contains "Something else fails
+".
 
 EOT;
+
         $this->assertEquals($expectedOutput, $failure->getExceptionAsString());
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
