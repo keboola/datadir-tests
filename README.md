@@ -53,7 +53,7 @@ The script then executes `/code/src/run.php` with `KBC_DATADIR` set to the test 
 
 When the `expected-code` file is present, the return code of execution is checked. The file contains a single number number - the execution code, allowed values are `0`, `1`, `2`.
 
-When the `expected-stderr` file is present, the stderr output is checked. The file content kept as it is including special characters like \t,\s,\n,...
+When the `expected-stderr` file is present, the stderr output is checked. The file content is kept as is including special characters like \t,\s,\n,...
 
 ## What is `DatadirTestSpecificationInterface`?
 
