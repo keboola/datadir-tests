@@ -16,11 +16,9 @@ use Symfony\Component\Process\Process;
 
 abstract class AbstractDatadirTestCase extends TestCase
 {
-    /** @var string */
-    protected $testFileDir;
+    protected string $testFileDir;
 
-    /** @var Temp */
-    protected $temp;
+    protected Temp $temp;
 
     public function __construct(
         ?string $name = null,
@@ -28,7 +26,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         string $dataName = ''
     ) {
         $reflectionClass = new ReflectionClass(static::class);
-        $this->testFileDir = dirname($reflectionClass->getFileName());
+        $this->testFileDir = dirname((string) $reflectionClass->getFileName());
         parent::__construct($name, $data, $dataName);
     }
 
@@ -116,8 +114,6 @@ abstract class AbstractDatadirTestCase extends TestCase
     {
         $fs = new Filesystem();
 
-        $this->temp->initRunFolder();
-
         if ($specification->getSourceDatadirDirectory() !== null) {
             $fs->mirror($specification->getSourceDatadirDirectory(), $this->temp->getTmpFolder());
         }
@@ -164,7 +160,7 @@ abstract class AbstractDatadirTestCase extends TestCase
     protected function assertProcessReturnCode(int $expectedReturnCode, Process $runProcess): void
     {
         $exitCode = $runProcess->getExitCode();
-        if ($exitCode == $expectedReturnCode) {
+        if ($exitCode === $expectedReturnCode) {
             $this->assertSame($expectedReturnCode, $exitCode);
             return;
         }
@@ -223,14 +219,14 @@ abstract class AbstractDatadirTestCase extends TestCase
         }
 
         $runCommand = [
-            "php",
+            'php',
             $script,
         ];
         $runProcess = new Process($runCommand);
         $runProcess->setEnv([
             'KBC_DATADIR' => $datadirPath,
         ]);
-        $runProcess->setTimeout(0);
+        $runProcess->setTimeout(0.0);
         $runProcess->run();
         return $runProcess;
     }

@@ -12,8 +12,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 {
-    /** @var string */
-    private $testDirectory;
+    private string $testDirectory;
 
     /** @var DatadirTestSpecification[][] */
     private $datapoints;
@@ -26,6 +25,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 
     /**
      * @return DatadirTestSpecificationInterface[][]
+     * @throws DatadirTestsException
      */
     public function __invoke(): array
     {
@@ -74,7 +74,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         $outTemplateDir = $workingDirectory . '/expected/data/out';
 
         if (file_exists($expectedReturnCodeFile)) {
-            $returnCode = trim(file_get_contents($expectedReturnCodeFile));
+            $returnCode = trim((string) file_get_contents($expectedReturnCodeFile));
             if (preg_match('~^[012]$~', $returnCode)) {
                 $expectedReturnCode = (int) $returnCode;
             } else {

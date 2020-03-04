@@ -6,20 +6,15 @@ namespace Keboola\DatadirTests;
 
 class DatadirTestSpecification implements DatadirTestSpecificationInterface
 {
-    /** @var string|null */
-    private $sourceDatadirDirectory;
+    private ?string $sourceDatadirDirectory;
 
-    /** @var string|null */
-    private $expectedStdout;
+    private ?string $expectedStdout;
 
-    /** @var string|null */
-    private $expectedStderr;
+    private ?string $expectedStderr;
 
-    /** @var int|null */
-    private $expectedReturnCode;
+    private ?int $expectedReturnCode;
 
-    /** @var string|null */
-    private $expectedOutDirectory;
+    private ?string $expectedOutDirectory;
 
     public function __construct(
         ?string $sourceDatadirDirectory = null,
