@@ -16,9 +16,11 @@ use Symfony\Component\Process\Process;
 
 abstract class AbstractDatadirTestCase extends TestCase
 {
-    protected string $testFileDir;
+    /** @var string  */
+    protected $testFileDir;
 
-    protected Temp $temp;
+    /** @var Temp  */
+    protected $temp;
 
     public function __construct(
         ?string $name = null,
