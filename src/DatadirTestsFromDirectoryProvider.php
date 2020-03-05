@@ -25,7 +25,6 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 
     /**
      * @return DatadirTestSpecificationInterface[][]
-     * @throws DatadirTestsException
      */
     public function __invoke(): array
     {
