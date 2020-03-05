@@ -12,7 +12,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 {
-    private string $testDirectory;
+    /** @var string */
+    private $testDirectory;
 
     /** @var DatadirTestSpecification[][] */
     private $datapoints;
