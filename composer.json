@@ -3,17 +3,17 @@
     "description": "Tool for functional testing of Keboola Connection components",
     "license": "MIT",
     "require": {
-        "PHP": "^7.1",
-        "keboola/php-temp": "^1.0",
-        "phpunit/phpunit": "^7.0",
-        "symfony/filesystem": "^4.0",
-        "symfony/finder": "^4.0",
-        "symfony/process": "^4.0"
+        "PHP": "^7.3",
+        "keboola/php-temp": "^2.0",
+        "phpunit/phpunit": "^9.0",
+        "symfony/filesystem": "^5.0",
+        "symfony/finder": "^5.0",
+        "symfony/process": "^5.0"
     },
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "^1.0",
-        "keboola/coding-standard": "^2.0",
-        "phpstan/phpstan-shim": "^0.9.2"
+        "keboola/coding-standard": "^9.0",
+        "phpstan/phpstan": "^0.12.14"
     },
     "scripts": {
         "phpstan": "phpstan analyse ./src ./tests --level=max --no-progress -c phpstan.neon",

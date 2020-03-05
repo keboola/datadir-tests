@@ -34,7 +34,6 @@ class DatadirTestCaseTest extends TestCase
         $test = $this->getTestCase('002-expected-fail');
         $result = $test->run();
 
-        /** @var TestFailure[] $errors */
         $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
 
         $this->assertEquals(0, $result->errorCount());
@@ -53,16 +52,15 @@ class DatadirTestCaseTest extends TestCase
 
         $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
 
-
         $this->assertEquals(0, $result->errorCount());
 
         $this->assertEquals(1, $result->failureCount());
         /** @var TestFailure[] $failures */
         $failures = $result->failures();
         $failure = $failures[0];
-        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertContains('-0', $failure->getExceptionAsString(), 'Expected code was not 0');
-        $this->assertContains('+2', $failure->getExceptionAsString(), 'Actal code was not 2');
+        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertStringContainsString('-0', $failure->getExceptionAsString(), 'Expected code was not 0');
+        $this->assertStringContainsString('+2', $failure->getExceptionAsString(), 'Actal code was not 2');
 
         $this->assertEquals(0, $result->skippedCount());
 
@@ -81,9 +79,9 @@ class DatadirTestCaseTest extends TestCase
         /** @var TestFailure[] $failures */
         $failures = $result->failures();
         $failure = $failures[0];
-        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected should be 1');
-        $this->assertContains('+0', $failure->getExceptionAsString(), 'Actual should be 0');
+        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertStringContainsString('-1', $failure->getExceptionAsString(), 'Expected should be 1');
+        $this->assertStringContainsString('+0', $failure->getExceptionAsString(), 'Actual should be 0');
 
         $this->assertEquals(0, $result->skippedCount());
 
@@ -138,9 +136,17 @@ class DatadirTestCaseTest extends TestCase
         $failures = $result->failures();
         /** @var TestFailure $failure */
         $failure = $failures[0];
-        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected exit code should have been 1');
-        $this->assertContains('+2', $failure->getExceptionAsString(), 'Actual exit code should have been 2');
+        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertStringContainsString(
+            '-1',
+            $failure->getExceptionAsString(),
+            'Expected exit code should have been 1'
+        );
+        $this->assertStringContainsString(
+            '+2',
+            $failure->getExceptionAsString(),
+            'Actual exit code should have been 2'
+        );
 
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
@@ -158,9 +164,17 @@ class DatadirTestCaseTest extends TestCase
         $failures = $result->failures();
         /** @var TestFailure $failure */
         $failure = $failures[0];
-        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertContains('-2', $failure->getExceptionAsString(), 'Expected exit code should have been 2');
-        $this->assertContains('+1', $failure->getExceptionAsString(), 'Actual exit code should have been 1');
+        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertStringContainsString(
+            '-2',
+            $failure->getExceptionAsString(),
+            'Expected exit code should have been 2'
+        );
+        $this->assertStringContainsString(
+            '+1',
+            $failure->getExceptionAsString(),
+            'Actual exit code should have been 1'
+        );
 
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
@@ -178,9 +192,17 @@ class DatadirTestCaseTest extends TestCase
         $failures = $result->failures();
         /** @var TestFailure $failure */
         $failure = $failures[0];
-        $this->assertContains('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertContains('-1', $failure->getExceptionAsString(), 'Expected exit code should have been 1');
-        $this->assertContains('+0', $failure->getExceptionAsString(), 'Actual exit code should have been 0');
+        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
+        $this->assertStringContainsString(
+            '-1',
+            $failure->getExceptionAsString(),
+            'Expected exit code should have been 1'
+        );
+        $this->assertStringContainsString(
+            '+0',
+            $failure->getExceptionAsString(),
+            'Actual exit code should have been 0'
+        );
 
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
@@ -196,7 +218,8 @@ class DatadirTestCaseTest extends TestCase
     public function testFailsIfNeitherFolderNorCodeIsExpected(): void
     {
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('functional: At least one of "expected/out/data" folder or "expected-code" file must exist');
+        $expectedMessage = 'functional: At least one of "expected/out/data" folder or "expected-code" file must exist';
+        $this->expectExceptionMessage($expectedMessage);
         $this->getTestCase('012-neither-code-or-folder');
     }
 

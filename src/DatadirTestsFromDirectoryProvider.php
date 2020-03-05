@@ -74,7 +74,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         $outTemplateDir = $workingDirectory . '/expected/data/out';
 
         if (file_exists($expectedReturnCodeFile)) {
-            $returnCode = trim(file_get_contents($expectedReturnCodeFile));
+            $returnCode = trim((string) file_get_contents($expectedReturnCodeFile));
             if (preg_match('~^[012]$~', $returnCode)) {
                 $expectedReturnCode = (int) $returnCode;
             } else {
