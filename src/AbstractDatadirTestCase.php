@@ -189,7 +189,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         int $expectedReturnCode,
         ?string $expectedStdout,
         ?string $expectedStderr
-    ): void {
+    ): Process {
         $specification = new DatadirTestSpecification(
             $testDirectory . '/source/data',
             $expectedReturnCode,
@@ -206,6 +206,8 @@ abstract class AbstractDatadirTestCase extends TestCase
         );
         $process = $this->runScript($tempFolder);
         $this->assertMatchesSpecification($specification, $process, $tempFolder);
+
+        return $process;
     }
 
     protected function runScript(string $datadirPath): Process
