@@ -138,16 +138,16 @@ abstract class AbstractDatadirTestCase extends TestCase
             $this->assertNotSame(0, $runProcess->getExitCode(), 'Exit code should have been non-zero');
         }
         if ($specification->getExpectedStdout() !== null) {
-            $this->assertSame(
-                $specification->getExpectedStdout(),
-                $runProcess->getOutput(),
+            $this->assertStringMatchesFormat(
+                trim($specification->getExpectedStdout()),
+                trim($runProcess->getOutput()),
                 'Failed asserting stdout output'
             );
         }
         if ($specification->getExpectedStderr() !== null) {
-            $this->assertSame(
-                $specification->getExpectedStderr(),
-                $runProcess->getErrorOutput(),
+            $this->assertStringMatchesFormat(
+                trim($specification->getExpectedStderr()),
+                trim($runProcess->getErrorOutput()),
                 'Failed asserting stderr output'
             );
         }

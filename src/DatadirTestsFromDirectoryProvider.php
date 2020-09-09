@@ -66,12 +66,22 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 
         $name = $testSuite->getBasename();
         $sourceDatadirDirectory = $workingDirectory . '/source/data';
+        $expectedStdoutFile = $workingDirectory . '/expected-stdout';
+        $expectedStderrFile = $workingDirectory . '/expected-stderr';
         $expectedStdout = null;
         $expectedStderr = null;
         $expectedReturnCodeFile = $workingDirectory . '/expected-code';
         $expectedReturnCode = null;
         $expectedOutputDirectory = null;
         $outTemplateDir = $workingDirectory . '/expected/data/out';
+
+        if (file_exists($expectedStdoutFile)) {
+            $expectedStdout = (string) file_get_contents($expectedStdoutFile);
+        }
+
+        if (file_exists($expectedStderrFile)) {
+            $expectedStderr = (string) file_get_contents($expectedStderrFile);
+        }
 
         if (file_exists($expectedReturnCodeFile)) {
             $returnCode = trim((string) file_get_contents($expectedReturnCodeFile));
