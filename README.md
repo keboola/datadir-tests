@@ -97,6 +97,15 @@ public function testInvalidFile(): void
 }
  ```
 
+## Functionality adjustment
+
+- To modify temp data dir before execution, you can extend the method `AbstractDatadirTestCase::setUpDatadir`.
+- To modify `config.json` in temp dir, you can override the method `AbstractDatadirTestCase::modifyConfigJsonContent`.
+    - You can use this to replace environment variables with a regular expression, or to add some common content.
+    - For example, you can replace `{{ DB_HOST }}` with `getenv('DB_HOST')` value,  
+      so if the test `host` changes, `config.json` in the datadir tests doesn't need to be modified.
+
+
 ## Development
  
 Clone this repository and init the workspace with following command:

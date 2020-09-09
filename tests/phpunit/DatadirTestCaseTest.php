@@ -223,6 +223,7 @@ class DatadirTestCaseTest extends TestCase
         $this->getTestCase('012-neither-code-or-folder');
     }
 
+
     public function testExpectedStdoutMatch(): void
     {
         $test = $this->getTestCase('013-expected-stdout-match');
@@ -289,6 +290,35 @@ class DatadirTestCaseTest extends TestCase
         $this->assertStringContainsString('Failed asserting that string matches format description', $error);
         $this->assertStringContainsString("-another message\n", $error);
         $this->assertStringContainsString("+stderr message '12345'\n", $error);
+    }
+
+    public function testModifyConfig(): void
+    {
+        // Get test
+        $testPath = __DIR__ . '/../functional/017-modify-config';
+        $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider($testPath);
+        $data = $datadirTestsFromDirectoryProvider();
+        $test = new class('testDatadir', $data['functional'], 'functional') extends DatadirTestCase
+        {
+            protected function getScript(): string
+            {
+                return __DIR__ . '/../functional/dummy-app.php';
+            }
+
+            protected function modifyConfigJsonContent(string $content): string
+            {
+                return str_replace('{{REPLACE}}', 'some text', $content);
+            }
+        };
+
+        // Run test
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
     }
 
     protected function getTestCase(string $path): DatadirTestCase
