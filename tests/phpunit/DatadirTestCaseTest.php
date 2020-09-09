@@ -223,6 +223,74 @@ class DatadirTestCaseTest extends TestCase
         $this->getTestCase('012-neither-code-or-folder');
     }
 
+    public function testExpectedStdoutMatch(): void
+    {
+        $test = $this->getTestCase('013-expected-stdout-match');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
+    public function testExpectedStdoutNotMatch(): void
+    {
+        $test = $this->getTestCase('014-expected-stdout-not-match');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(1, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+
+        /** @var TestFailure[] $failures */
+        $failures = $result->failures();
+        /** @var TestFailure $failure */
+        $failure = $failures[0];
+        $error = $failure->getExceptionAsString();
+        $this->assertStringContainsString('Failed asserting stdout output', $error);
+        $this->assertStringContainsString('Failed asserting that string matches format description', $error);
+        $this->assertStringContainsString("-another message\n", $error);
+        $this->assertStringContainsString("+stdout message '12345'\n", $error);
+    }
+
+    public function testExpectedStderrMatch(): void
+    {
+        $test = $this->getTestCase('015-expected-stderr-match');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+    }
+
+    public function testExpectedStderrNotMatch(): void
+    {
+        $test = $this->getTestCase('016-expected-stderr-not-match');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $this->assertEquals(0, $result->errorCount());
+        $this->assertEquals(1, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+        $this->assertCount(1, $result);
+
+        /** @var TestFailure[] $failures */
+        $failures = $result->failures();
+        /** @var TestFailure $failure */
+        $failure = $failures[0];
+        $error = $failure->getExceptionAsString();
+        $this->assertStringContainsString('Failed asserting stderr output', $error);
+        $this->assertStringContainsString('Failed asserting that string matches format description', $error);
+        $this->assertStringContainsString("-another message\n", $error);
+        $this->assertStringContainsString("+stderr message '12345'\n", $error);
+    }
+
     protected function getTestCase(string $path): DatadirTestCase
     {
         $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider(__DIR__ . '/../functional/' . $path);

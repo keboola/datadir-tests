@@ -13,6 +13,8 @@ In the tests folder create a directory structure mimicking the directory structu
 /path/to/tests
 └─test-name
   ├─expected-code
+  ├─expected-stdout (optional)
+  ├─expected-stderr (optional)
   ├─expected
   │ └─data
   │   └─out
@@ -25,6 +27,10 @@ In the tests folder create a directory structure mimicking the directory structu
   │     └─tables
   └─config.json
 ```
+
+Note: `expected-stdout` and `expected-stderr` 
+are compared with real output using [`assertStringMatchesFormat`](https://phpunit.readthedocs.io/en/9.3/assertions.html#assertstringmatchesformat) method,
+so you can use [placeholders](https://phpunit.readthedocs.io/en/9.3/assertions.html#assertstringmatchesformat).
 
 Then create empty `/path/to/tests/DatadirTest` that extends `Keboola\DatadirTests\DatadirTestCase`:
 
