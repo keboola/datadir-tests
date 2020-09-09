@@ -124,7 +124,26 @@ abstract class AbstractDatadirTestCase extends TestCase
         $fs->mkdir($this->temp->getTmpFolder() . '/in/files', 0777);
         $fs->mkdir($this->temp->getTmpFolder() . '/out/tables', 0777);
         $fs->mkdir($this->temp->getTmpFolder() . '/out/files', 0777);
+
+        $this->setUpDatadir($this->temp->getTmpFolder());
+
         return $this->temp;
+    }
+
+    protected function setUpDatadir(string $tmpFolderPath): void
+    {
+        // Modify content of config.json if present (eg. replace environment variables)
+        $configPath = $tmpFolderPath . '/config.json';
+        if (file_exists($configPath)) {
+            $configContent = $this->modifyConfigJsonContent((string) file_get_contents($configPath));
+            file_put_contents($configPath, $configContent);
+        }
+    }
+
+    protected function modifyConfigJsonContent(string $content): string
+    {
+        // Method can be overridden to modify config.json content
+        return $content;
     }
 
     protected function assertMatchesSpecification(
