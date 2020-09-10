@@ -104,7 +104,7 @@ public function testInvalidFile(): void
 - All string values in `config.json` that match specified format are replaced.
 - It is implemented in`AbstractDatadirTestCase::modifyConfigJsonContent`. 
 - Allowed types are `string`, `int`, `float`, `bool`.
-- See example in the [test](https://github.com/keboola/datadir-tests/blob/webrouse-COM-203-env-processor/tests/functional/017-modify-config/functional/source/data/config.json).
+- See example in the [test](https://github.com/keboola/datadir-tests/blob/master/tests/functional/017-modify-config/functional/source/data/config.json).
  
 
 ## Functionality adjustments
