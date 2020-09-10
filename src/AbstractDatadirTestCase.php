@@ -163,7 +163,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         $processor = $this->createEnvVarProcessor();
         array_walk_recursive($config, function (&$value) use ($processor): void {
             if (is_string($value)) {
-                $value = $processor->replaceEnv($value);
+                $value = $processor->evaluateExpr($value);
             }
         });
 

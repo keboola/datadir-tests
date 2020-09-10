@@ -12,7 +12,7 @@ class EnvVarProcessor
     /**
      * @return mixed
      */
-    public function replaceEnv(string $value)
+    public function evaluateExpr(string $value)
     {
         $pattern =
             '~^' .                       // start

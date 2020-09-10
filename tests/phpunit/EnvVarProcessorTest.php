@@ -16,14 +16,14 @@ class EnvVarProcessorTest extends TestCase
      * @dataProvider getValidInputs
      * @param mixed $expected
      */
-    public function testReplaceEnv(?string $var, ?string $value, string $statement, $expected): void
+    public function testEvaluateExpr(?string $var, ?string $value, string $statement, $expected): void
     {
         if ($var) {
             putenv("$var=$value");
         }
 
         $processor = new EnvVarProcessor();
-        Assert::assertSame($expected, $processor->replaceEnv($statement));
+        Assert::assertSame($expected, $processor->evaluateExpr($statement));
     }
 
     public function getValidInputs(): array
@@ -65,7 +65,7 @@ class EnvVarProcessorTest extends TestCase
         $this->expectException(EnvVariableNotFoundException::class);
         $this->expectExceptionMessage('Env variable "VAR1" not found.');
         $processor = new EnvVarProcessor();
-        $processor->replaceEnv('%env(string:VAR1)%');
+        $processor->evaluateExpr('%env(string:VAR1)%');
     }
 
     public function testInvalidType(): void
@@ -74,6 +74,6 @@ class EnvVarProcessorTest extends TestCase
         $this->expectException(UnexpectedTypeException::class);
         $this->expectExceptionMessage('Unexpected type "invalid" of the env variable "VAR1".');
         $processor = new EnvVarProcessor();
-        $processor->replaceEnv('%env(invalid:VAR1)%');
+        $processor->evaluateExpr('%env(invalid:VAR1)%');
     }
 }
