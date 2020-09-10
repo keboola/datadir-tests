@@ -168,7 +168,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         });
 
         // Encode JSON
-        return (string) json_encode($config);
+        return (string) json_encode($config, JSON_PRETTY_PRINT);
     }
 
     protected function assertMatchesSpecification(
