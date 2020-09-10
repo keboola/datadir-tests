@@ -40,7 +40,7 @@ class EnvVarProcessorTest extends TestCase
             'float-string' => ['MY_FLOAT_VAR_123', 'content', '%env(float:MY_FLOAT_VAR_123)%', 0.0],
             'float-int' => ['VAR1', '456', '%env(float:VAR1)%', 456.0],
             'float-ok' => ['VAR1', '456.78', '%env(float:VAR1)%', 456.78],
-            'bool-invalid' => ['VAR1', 'content', '%env(bool:VAR1)%', false],
+            'bool-string' => ['VAR1', 'content', '%env(bool:VAR1)%', true],
             'bool-empty' => ['VAR1', '', '%env(bool:VAR1)%', false],
             'bool-yes' => ['VAR1', 'yes', '%env(bool:VAR1)%', true],
             'bool-no' => ['VAR1', 'no', '%env(bool:VAR1)%', false],

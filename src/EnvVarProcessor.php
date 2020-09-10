@@ -64,9 +64,10 @@ class EnvVarProcessor
     {
         $value = strtolower($value);
         return
-            $value === 't' ||
-            $value === 'true' ||
-            $value === 'yes' ||
-            $value === '1';
+            $value !== '' &&
+            $value !== 'f' &&
+            $value !== 'false' &&
+            $value !== 'no' &&
+            $value !== '0';
     }
 }
