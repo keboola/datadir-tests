@@ -31,7 +31,7 @@ class EnvVarProcessor
         return $value;
     }
 
-    protected function getEnv(string $var): string
+    public function getEnv(string $var): string
     {
         $value = getenv($var);
         if ($value === false) {

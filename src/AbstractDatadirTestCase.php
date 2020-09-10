@@ -146,6 +146,11 @@ abstract class AbstractDatadirTestCase extends TestCase
         return new EnvVarProcessor();
     }
 
+    protected function getEnv(string $var): string
+    {
+        return $this->createEnvVarProcessor()->getEnv($var);
+    }
+
     protected function modifyConfigJsonContent(string $content): string
     {
         // Decode JSON
