@@ -49,7 +49,7 @@ class DatadirTest extends DatadirTestCase
 
 ``` 
 
-run it using 
+Run it using 
 
 `vendor/bin/phpunit /path/to/tests/DatadirTest.php`
 
@@ -97,14 +97,19 @@ public function testInvalidFile(): void
 }
  ```
 
-## Functionality adjustment
+## Environment variables
+
+- In `config.json` you can use placeholders for environment variables. 
+- Format is `%env(TYPE:VAR_NAME)%`, eg. `%env(int:DB_PORT)%`. 
+- All string values in `config.json` that match specified format are replaced.
+- It is implemented in`AbstractDatadirTestCase::modifyConfigJsonContent`. 
+- Allowed types are `string`, `int`, `float`, `bool`.
+- See example in the [test](https://github.com/keboola/datadir-tests/blob/master/tests/functional/017-modify-config/functional/source/data/config.json).
+ 
+
+## Functionality adjustments
 
 - To modify temp data dir before execution, you can extend the method `AbstractDatadirTestCase::setUpDatadir`.
-- To modify `config.json` in temp dir, you can override the method `AbstractDatadirTestCase::modifyConfigJsonContent`.
-    - You can use this to replace environment variables with a regular expression, or to add some common content.
-    - For example, you can replace `{{ DB_HOST }}` with `getenv('DB_HOST')` value,  
-      so if the test `host` changes, `config.json` in the datadir tests doesn't need to be modified.
-
 
 ## Development
  

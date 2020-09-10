@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Keboola\DatadirTests;
 
+use JsonException;
+use ReflectionClass;
 use Keboola\DatadirTests\Exception\DatadirTestsException;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use ReflectionClass;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
@@ -140,10 +141,39 @@ abstract class AbstractDatadirTestCase extends TestCase
         }
     }
 
+    protected function createEnvVarProcessor(): EnvVarProcessor
+    {
+        return new EnvVarProcessor();
+    }
+
+    protected function getEnv(string $var): string
+    {
+        return $this->createEnvVarProcessor()->getEnv($var);
+    }
+
     protected function modifyConfigJsonContent(string $content): string
     {
-        // Method can be overridden to modify config.json content
-        return $content;
+        // Decode JSON
+        try {
+            $config = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new DatadirTestsException(sprintf(
+                'Cannot decode "config.json", dataset "%s": %s',
+                $this->dataName(),
+                $e->getMessage()
+            ));
+        }
+
+        // Replace env vars
+        $processor = $this->createEnvVarProcessor();
+        array_walk_recursive($config, function (&$value) use ($processor): void {
+            if (is_string($value)) {
+                $value = $processor->evaluateExpr($value);
+            }
+        });
+
+        // Encode JSON
+        return (string) json_encode($config, JSON_PRETTY_PRINT);
     }
 
     protected function assertMatchesSpecification(

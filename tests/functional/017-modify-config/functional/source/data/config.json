@@ -1,3 +1,3 @@
 {
-  "message": "{{REPLACE}}"
+  "message": "%env(string:MY_TEST_VAR_123)%"
 }

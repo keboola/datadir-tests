@@ -294,24 +294,8 @@ class DatadirTestCaseTest extends TestCase
 
     public function testModifyConfig(): void
     {
-        // Get test
-        $testPath = __DIR__ . '/../functional/017-modify-config';
-        $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider($testPath);
-        $data = $datadirTestsFromDirectoryProvider();
-        $test = new class('testDatadir', $data['functional'], 'functional') extends DatadirTestCase
-        {
-            protected function getScript(): string
-            {
-                return __DIR__ . '/../functional/dummy-app.php';
-            }
-
-            protected function modifyConfigJsonContent(string $content): string
-            {
-                return str_replace('{{REPLACE}}', 'some text', $content);
-            }
-        };
-
-        // Run test
+        putenv('MY_TEST_VAR_123=some simple message');
+        $test = $this->getTestCase('017-modify-config');
         $result = $test->run();
 
         $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
@@ -319,6 +303,26 @@ class DatadirTestCaseTest extends TestCase
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
         $this->assertCount(1, $result);
+    }
+
+    public function testInvalidConfig(): void
+    {
+        $test = $this->getTestCase('018-invalid-config');
+        $result = $test->run();
+
+        $this->assertEquals(BaseTestRunner::STATUS_ERROR, $test->getStatus());
+        $this->assertEquals(1, $result->errorCount());
+        $this->assertEquals(0, $result->failureCount());
+        $this->assertEquals(0, $result->skippedCount());
+
+        $errors = $result->errors();
+        $error = $errors[0];
+        $error = $error->getExceptionAsString();
+        $this->assertStringContainsString(
+            'Keboola\DatadirTests\Exception\DatadirTestsException: ' .
+            'Cannot decode "config.json", dataset "functional": Syntax error',
+            $error
+        );
     }
 
     protected function getTestCase(string $path): DatadirTestCase
