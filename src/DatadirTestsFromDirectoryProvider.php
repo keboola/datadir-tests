@@ -105,7 +105,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 
         if ($expectedOutputDirectory === null && $expectedReturnCode === null) {
             throw new LogicException(sprintf(
-                '%s: At least one of "expected/out/data" folder or "expected-code" file must exist',
+                '%s: At least one of "expected/data/out" folder or "expected-code" file must exist',
                 $name
             ));
         }

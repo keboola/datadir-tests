@@ -218,7 +218,7 @@ class DatadirTestCaseTest extends TestCase
     public function testFailsIfNeitherFolderNorCodeIsExpected(): void
     {
         $this->expectException(LogicException::class);
-        $expectedMessage = 'functional: At least one of "expected/out/data" folder or "expected-code" file must exist';
+        $expectedMessage = 'functional: At least one of "expected/data/out" folder or "expected-code" file must exist';
         $this->expectExceptionMessage($expectedMessage);
         $this->getTestCase('012-neither-code-or-folder');
     }
