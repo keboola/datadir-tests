@@ -5,15 +5,16 @@ declare(strict_types=1);
 namespace Keboola\DatadirTests;
 
 use JsonException;
-use ReflectionClass;
 use Keboola\DatadirTests\Exception\DatadirTestsException;
 use Keboola\Temp\Temp;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
+use const PHP_EOL;
 
 abstract class AbstractDatadirTestCase extends TestCase
 {
@@ -95,10 +96,10 @@ abstract class AbstractDatadirTestCase extends TestCase
         $diffProcess->run();
         if ($diffProcess->getExitCode() > 0) {
             throw new AssertionFailedError(sprintf(
-                'Two directories are not the same:' . \PHP_EOL .
-                '%s' . \PHP_EOL .
-                '%s' . \PHP_EOL .
-                '%s' . \PHP_EOL .
+                'Two directories are not the same:' . PHP_EOL .
+                '%s' . PHP_EOL .
+                '%s' . PHP_EOL .
+                '%s' . PHP_EOL .
                 '%s',
                 $expected,
                 $actual,
@@ -155,7 +156,7 @@ abstract class AbstractDatadirTestCase extends TestCase
     {
         // Decode JSON
         try {
-            $config = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+            $config = (array) json_decode($content, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
             throw new DatadirTestsException(sprintf(
                 'Cannot decode "config.json", dataset "%s": %s',
