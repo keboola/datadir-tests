@@ -260,7 +260,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         return $process;
     }
 
-    protected function runScript(string $datadirPath): Process
+    protected function runScript(string $datadirPath, ?string $runId = null): Process
     {
         $fs = new Filesystem();
 
@@ -279,6 +279,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         $runProcess = new Process($runCommand);
         $runProcess->setEnv([
             'KBC_DATADIR' => $datadirPath,
+            'KBC_RUNID' => $runId ?? (string) random_int(1000, 100000),
         ]);
         $runProcess->setTimeout(0.0);
         $runProcess->run();
