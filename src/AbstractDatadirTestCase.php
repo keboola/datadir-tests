@@ -277,9 +277,10 @@ abstract class AbstractDatadirTestCase extends TestCase
             $script,
         ];
         $runProcess = new Process($runCommand);
+        $defaultRunId = random_int(1000, 100000) . '.' . random_int(1000, 100000) . '.' . random_int(1000, 100000);
         $runProcess->setEnv([
             'KBC_DATADIR' => $datadirPath,
-            'KBC_RUNID' => $runId ?? (string) random_int(1000, 100000) . '.' . random_int(1000, 100000) . '.' . random_int(1000, 100000),
+            'KBC_RUNID' => $runId ?? $defaultRunId,
         ]);
         $runProcess->setTimeout(0.0);
         $runProcess->run();
