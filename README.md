@@ -1,15 +1,18 @@
-# Datadir tests
+# Datadir Tests
 
-[![Build Status](https://travis-ci.org/keboola/datadir-tests.svg?branch=master)](https://travis-ci.org/keboola/datadir-tests)
+[![GitHub Actions](https://github.com/keboola/datadir-tests/actions/workflows/push.yml/badge.svg)](https://github.com/keboola/datadir-tests/actions/workflows/push.yml)
 
 # Usage
 
 Require this package in you component
 
-`composer require keboola/datadir-tests`
+```shell
+composer require keboola/datadir-tests`
+```
 
 In the tests folder create a directory structure mimicking the directory structure in production:
-```
+
+```text
 /path/to/tests
 └─test-name
   ├─expected-code
@@ -51,8 +54,9 @@ class DatadirTest extends DatadirTestCase
 
 Run it using 
 
-`vendor/bin/phpunit /path/to/tests/DatadirTest.php`
-
+```shell
+vendor/bin/phpunit /path/to/tests/DatadirTest.php`
+```
 
 The script then executes `/code/src/run.php` with `KBC_DATADIR` set to the test directory. There can be any number of test directories and the script automatically discovers them using `DatadirTestsFromDirectoryProvider`. You can supply your own provider that implements `DatadirTestsProviderInterface`. It needs to return array of arrays (!) of `DatadirTestSpecificationInterface` instances. 
 
@@ -115,10 +119,14 @@ public function testInvalidFile(): void
  
 Clone this repository and init the workspace with following command:
 
-```
+```shell
 git clone https://github.com/keboola/datadir-tests
 cd datadir-tests
 docker-compose run --rm dev /bin/bash
 $ composer install
 $ composer ci
 ```
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
