@@ -9,6 +9,10 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        symfonyVersion: ["5.4.*", "6.1.*"]
     steps:
       -
         name: 'Check out the repo'
@@ -19,7 +23,7 @@ jobs:
         run: 'docker login --username "$DOCKERHUB_USER" --password "$DOCKERHUB_TOKEN"'
       -
         name: 'Build image'
-        run: 'docker build -t $APP_IMAGE .'
+        run: 'docker build --build-arg SYMFONY_REQUIRE=${{ matrix.symfonyVersion }} -t $APP_IMAGE .'
       -
         name: 'Run tests'
         run: 'docker run ${{env.APP_IMAGE}} composer ci'

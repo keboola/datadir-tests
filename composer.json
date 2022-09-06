@@ -6,10 +6,10 @@
         "PHP": "^7.4|^8.0",
         "ext-json": "*",
         "keboola/php-temp": "^2.0",
-        "phpunit/phpunit": "^9.0",
-        "symfony/filesystem": "^5.0",
-        "symfony/finder": "^5.0",
-        "symfony/process": "^5.0"
+        "phpunit/phpunit": "^9.5",
+        "symfony/filesystem": "^5.0|^6.0",
+        "symfony/finder": "^5.0|^6.0",
+        "symfony/process": "^5.0|^6.0"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.3",
@@ -35,6 +35,7 @@
     },
     "config": {
         "sort-packages": true,
+        "lock": false,
         "optimize-autoloader": true,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true

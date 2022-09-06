@@ -3,6 +3,8 @@ ARG phpversion=8
 FROM php:${phpversion}-cli
 
 ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
+ARG SYMFONY_REQUIRE=6.*
+
 ARG DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_ALLOW_SUPERUSER 1
 ENV COMPOSER_PROCESS_TIMEOUT 3600
@@ -18,6 +20,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -r /var/lib/apt/lists/* \
 	&& chmod +x /tmp/composer-install.sh \
 	&& /tmp/composer-install.sh
+
+# To enable SYMFONY_REQUIRE
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer \
+ && composer global config allow-plugins.symfony/flex true \
+ && composer global require --no-progress --no-scripts --no-plugins symfony/flex
 
 ## Composer - deps always cached unless changed
 # First copy only composer files
