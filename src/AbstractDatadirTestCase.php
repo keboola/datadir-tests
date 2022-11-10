@@ -24,10 +24,13 @@ abstract class AbstractDatadirTestCase extends TestCase
     /** @var Temp */
     protected $temp;
 
+    /**
+     * @inheritDoc
+     */
     public function __construct(
         ?string $name = null,
         array $data = [],
-        string $dataName = ''
+        $dataName = ''
     ) {
         $reflectionClass = new ReflectionClass(static::class);
         $this->testFileDir = dirname((string) $reflectionClass->getFileName());
