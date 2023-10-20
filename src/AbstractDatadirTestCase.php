@@ -281,10 +281,15 @@ abstract class AbstractDatadirTestCase extends TestCase
         ];
         $runProcess = new Process($runCommand);
         $defaultRunId = random_int(1000, 100000) . '.' . random_int(1000, 100000) . '.' . random_int(1000, 100000);
-        $runProcess->setEnv([
+        $environments = [
             'KBC_DATADIR' => $datadirPath,
             'KBC_RUNID' => $runId ?? $defaultRunId,
-        ]);
+        ];
+        if (getEnv('KBC_COMPONENT_RUN_MODE')) {
+            $environments['KBC_COMPONENT_RUN_MODE'] = getEnv('KBC_COMPONENT_RUN_MODE');
+        }
+
+        $runProcess->setEnv($environments);
         $runProcess->setTimeout(0.0);
         $runProcess->run();
         return $runProcess;
