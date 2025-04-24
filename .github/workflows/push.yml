@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        symfonyVersion: ["5.4.*", "6.1.*"]
+        symfonyVersion: ["5.4.*", "6.4.*", "7.2.*"]
     steps:
       -
         name: 'Check out the repo'

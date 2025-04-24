@@ -7,9 +7,9 @@
         "ext-json": "*",
         "keboola/php-temp": "^2.0",
         "phpunit/phpunit": "^9.5",
-        "symfony/filesystem": "^5.0|^6.0",
-        "symfony/finder": "^5.0|^6.0",
-        "symfony/process": "^5.0|^6.0"
+        "symfony/filesystem": "^5.0|^6.0|^7.0",
+        "symfony/finder": "^5.0|^6.0|^7.0",
+        "symfony/process": "^5.0|^6.0|^7.0"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.3",
