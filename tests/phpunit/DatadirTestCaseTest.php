@@ -140,12 +140,12 @@ class DatadirTestCaseTest extends TestCase
         $this->assertStringContainsString(
             '-1',
             $failure->getExceptionAsString(),
-            'Expected exit code should have been 1'
+            'Expected exit code should have been 1',
         );
         $this->assertStringContainsString(
             '+2',
             $failure->getExceptionAsString(),
-            'Actual exit code should have been 2'
+            'Actual exit code should have been 2',
         );
 
         $this->assertEquals(0, $result->skippedCount());
@@ -168,12 +168,12 @@ class DatadirTestCaseTest extends TestCase
         $this->assertStringContainsString(
             '-2',
             $failure->getExceptionAsString(),
-            'Expected exit code should have been 2'
+            'Expected exit code should have been 2',
         );
         $this->assertStringContainsString(
             '+1',
             $failure->getExceptionAsString(),
-            'Actual exit code should have been 1'
+            'Actual exit code should have been 1',
         );
 
         $this->assertEquals(0, $result->skippedCount());
@@ -196,12 +196,12 @@ class DatadirTestCaseTest extends TestCase
         $this->assertStringContainsString(
             '-1',
             $failure->getExceptionAsString(),
-            'Expected exit code should have been 1'
+            'Expected exit code should have been 1',
         );
         $this->assertStringContainsString(
             '+0',
             $failure->getExceptionAsString(),
-            'Actual exit code should have been 0'
+            'Actual exit code should have been 0',
         );
 
         $this->assertEquals(0, $result->skippedCount());
@@ -321,7 +321,7 @@ class DatadirTestCaseTest extends TestCase
         $this->assertStringContainsString(
             'Keboola\DatadirTests\Exception\DatadirTestsException: ' .
             'Cannot decode "config.json", dataset "functional": Syntax error',
-            $error
+            $error,
         );
     }
 

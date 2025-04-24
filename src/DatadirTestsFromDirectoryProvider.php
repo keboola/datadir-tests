@@ -52,7 +52,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         if (!$fs->exists($testDirectory)) {
             throw new DatadirTestsException(sprintf(
                 'Tests directory "%s" does not exist',
-                $testDirectory
+                $testDirectory,
             ));
         }
         $finder = $this->getFoundDirectories();
@@ -92,7 +92,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
                 throw new InvalidArgumentException(sprintf(
                     '%s: Expecting invalid return code (%s). Possible codes are: 0, 1, 2.',
                     $name,
-                    $returnCode
+                    $returnCode,
                 ));
             }
         }
@@ -107,7 +107,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
         if ($expectedOutputDirectory === null && $expectedReturnCode === null) {
             throw new LogicException(sprintf(
                 '%s: At least one of "expected/data/out" folder or "expected-code" file must exist',
-                $name
+                $name,
             ));
         }
 
@@ -117,7 +117,7 @@ class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
                 $expectedReturnCode,
                 $expectedStdout,
                 $expectedStderr,
-                $expectedOutputDirectory
+                $expectedOutputDirectory,
             ),
         ];
     }
