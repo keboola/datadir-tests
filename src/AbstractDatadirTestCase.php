@@ -285,8 +285,8 @@ abstract class AbstractDatadirTestCase extends TestCase
             'KBC_DATADIR' => $datadirPath,
             'KBC_RUNID' => $runId ?? $defaultRunId,
         ];
-        if (getEnv('KBC_COMPONENT_RUN_MODE')) {
-            $environments['KBC_COMPONENT_RUN_MODE'] = getEnv('KBC_COMPONENT_RUN_MODE');
+        if (getenv('KBC_COMPONENT_RUN_MODE')) {
+            $environments['KBC_COMPONENT_RUN_MODE'] = (string) getenv('KBC_COMPONENT_RUN_MODE');
         }
 
         $runProcess->setEnv($environments);

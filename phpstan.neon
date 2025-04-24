@@ -1,5 +1,5 @@
 parameters:
     excludePaths:
         - tests/functional/dummy-app.php
-    checkMissingIterableValueType: false
     ignoreErrors:
+        - identifier: missingType.iterableValue
