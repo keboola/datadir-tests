@@ -76,13 +76,13 @@ abstract class AbstractDatadirTestCase extends TestCase
         if (!$fs->exists($expected)) {
             throw new AssertionFailedError(sprintf(
                 'Expected path "%s" does not exist',
-                $expected
+                $expected,
             ));
         }
         if (!$fs->exists($actual)) {
             throw new AssertionFailedError(sprintf(
                 'Actual path "%s" does not exist',
-                $actual
+                $actual,
             ));
         }
         $expected = realpath($expected);
@@ -107,7 +107,7 @@ abstract class AbstractDatadirTestCase extends TestCase
                 $expected,
                 $actual,
                 $diffProcess->getOutput(),
-                $diffProcess->getErrorOutput()
+                $diffProcess->getErrorOutput(),
             ));
         }
     }
@@ -164,7 +164,7 @@ abstract class AbstractDatadirTestCase extends TestCase
             throw new DatadirTestsException(sprintf(
                 'Cannot decode "config.json", dataset "%s": %s',
                 $this->dataName(),
-                $e->getMessage()
+                $e->getMessage(),
             ));
         }
 
@@ -194,20 +194,20 @@ abstract class AbstractDatadirTestCase extends TestCase
             $this->assertStringMatchesFormat(
                 trim($specification->getExpectedStdout()),
                 trim($runProcess->getOutput()),
-                'Failed asserting stdout output'
+                'Failed asserting stdout output',
             );
         }
         if ($specification->getExpectedStderr() !== null) {
             $this->assertStringMatchesFormat(
                 trim($specification->getExpectedStderr()),
                 trim($runProcess->getErrorOutput()),
-                'Failed asserting stderr output'
+                'Failed asserting stderr output',
             );
         }
         if ($specification->getExpectedOutDirectory() !== null) {
             $this->assertDirectoryContentsSame(
                 $specification->getExpectedOutDirectory(),
-                $tempDatadir . '/out'
+                $tempDatadir . '/out',
             );
         }
     }
@@ -232,7 +232,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         }
         throw new ExpectationFailedException(
             'Failed asserting exit code' . PHP_EOL . $message,
-            new ComparisonFailure($expectedReturnCode, $exitCode, (string) $expectedReturnCode, (string) $exitCode)
+            new ComparisonFailure($expectedReturnCode, $exitCode, (string) $expectedReturnCode, (string) $exitCode),
         );
     }
 
@@ -248,14 +248,14 @@ abstract class AbstractDatadirTestCase extends TestCase
             $expectedReturnCode,
             $expectedStdout,
             $expectedStderr,
-            $testDirectory . '/expected/data/out'
+            $testDirectory . '/expected/data/out',
         );
 
         $tempDatadir = $this->getTempDatadir($specification);
         $tempFolder = $tempDatadir->getTmpFolder();
         file_put_contents(
             $tempFolder . '/config.json',
-            json_encode($configuration, JSON_PRETTY_PRINT)
+            json_encode($configuration, JSON_PRETTY_PRINT),
         );
         $process = $this->runScript($tempFolder);
         $this->assertMatchesSpecification($specification, $process, $tempFolder);
@@ -271,7 +271,7 @@ abstract class AbstractDatadirTestCase extends TestCase
         if (!$fs->exists($script)) {
             throw new DatadirTestsException(sprintf(
                 'Cannot open script file "%s"',
-                $script
+                $script,
             ));
         }
 
