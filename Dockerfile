@@ -1,9 +1,9 @@
-ARG phpversion=8
+ARG PHP_VERSION=7.4
 
-FROM php:${phpversion}-cli
+FROM php:${PHP_VERSION}-cli
 
 ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
-ARG SYMFONY_REQUIRE=6.*
+ARG SYMFONY_REQUIRE=5.*
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV COMPOSER_ALLOW_SUPERUSER 1
