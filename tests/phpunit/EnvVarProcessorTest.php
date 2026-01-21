@@ -26,7 +26,7 @@ class EnvVarProcessorTest extends TestCase
         Assert::assertSame($expected, $processor->evaluateExpr($statement));
     }
 
-    public function getValidInputs(): array
+    public static function getValidInputs(): array
     {
         return [
             'no_var_1' => [null, null, 'abc', 'abc'],

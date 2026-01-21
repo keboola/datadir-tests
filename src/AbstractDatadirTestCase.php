@@ -18,24 +18,11 @@ use const PHP_EOL;
 
 abstract class AbstractDatadirTestCase extends TestCase
 {
-    /** @var string */
+    /** @var string|null */
     protected $testFileDir;
 
     /** @var Temp */
     protected $temp;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(
-        ?string $name = null,
-        array $data = [],
-        $dataName = ''
-    ) {
-        $reflectionClass = new ReflectionClass(static::class);
-        $this->testFileDir = dirname((string) $reflectionClass->getFileName());
-        parent::__construct($name, $data, $dataName);
-    }
 
     protected function setUp(): void
     {
@@ -67,6 +54,10 @@ abstract class AbstractDatadirTestCase extends TestCase
 
     public function getTestFileDir(): string
     {
+        if ($this->testFileDir === null) {
+            $reflectionClass = new ReflectionClass(static::class);
+            $this->testFileDir = dirname((string) $reflectionClass->getFileName());
+        }
         return $this->testFileDir;
     }
 
