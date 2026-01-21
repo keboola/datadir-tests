@@ -204,6 +204,8 @@ class DatadirTestCaseTest extends TestCase
             $error = $e->getMessage();
             $this->assertStringContainsString('Failed asserting stdout output', $error);
             $this->assertStringContainsString('Failed asserting that string matches format description', $error);
+            $this->assertStringContainsString('another message', $error);
+            $this->assertStringContainsString('stdout message \'12345\'', $error);
         }
     }
 
@@ -227,6 +229,8 @@ class DatadirTestCaseTest extends TestCase
             $error = $e->getMessage();
             $this->assertStringContainsString('Failed asserting stderr output', $error);
             $this->assertStringContainsString('Failed asserting that string matches format description', $error);
+            $this->assertStringContainsString('another message', $error);
+            $this->assertStringContainsString('stderr message \'12345\'', $error);
         }
     }
 
