@@ -8,15 +8,13 @@ use Keboola\DatadirTests\EnvVarProcessor;
 use Keboola\DatadirTests\Exception\EnvVariableNotFoundException;
 use Keboola\DatadirTests\Exception\UnexpectedTypeException;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EnvVarProcessorTest extends TestCase
 {
-    /**
-     * @dataProvider getValidInputs
-     * @param mixed $expected
-     */
-    public function testEvaluateExpr(?string $var, ?string $value, string $statement, $expected): void
+    #[DataProvider('getValidInputs')]
+    public function testEvaluateExpr(?string $var, ?string $value, string $statement, mixed $expected): void
     {
         if ($var) {
             putenv("$var=$value");
@@ -26,7 +24,10 @@ class EnvVarProcessorTest extends TestCase
         Assert::assertSame($expected, $processor->evaluateExpr($statement));
     }
 
-    public function getValidInputs(): array
+    /**
+     * @return array<string, array{0: ?string, 1: ?string, 2: string, 3: mixed}>
+     */
+    public static function getValidInputs(): array
     {
         return [
             'no_var_1' => [null, null, 'abc', 'abc'],
