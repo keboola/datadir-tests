@@ -18,11 +18,9 @@ use const PHP_EOL;
 
 abstract class AbstractDatadirTestCase extends TestCase
 {
-    /** @var string|null */
-    protected $testFileDir;
+    protected ?string $testFileDir = null;
 
-    /** @var Temp */
-    protected $temp;
+    protected Temp $temp;
 
     protected function setUp(): void
     {
