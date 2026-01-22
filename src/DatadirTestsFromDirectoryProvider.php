@@ -13,16 +13,12 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class DatadirTestsFromDirectoryProvider implements DatadirTestsProviderInterface
 {
-    /** @var string */
-    private $testDirectory;
-
     /** @var DatadirTestSpecification[][] */
-    private $datapoints;
+    private array $datapoints = [];
 
     public function __construct(
-        string $testDirectory = 'tests/functional'
+        private string $testDirectory = 'tests/functional',
     ) {
-        $this->testDirectory = $testDirectory;
     }
 
     /**

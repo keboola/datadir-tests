@@ -7,205 +7,189 @@ namespace Keboola\DatadirTests\Tests;
 use InvalidArgumentException;
 use Keboola\DatadirTests\DatadirTestCase;
 use Keboola\DatadirTests\DatadirTestsFromDirectoryProvider;
+use Keboola\DatadirTests\DatadirTestSpecificationInterface;
+use Keboola\DatadirTests\Exception\DatadirTestsException;
 use LogicException;
+use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\TestFailure;
-use PHPUnit\Runner\BaseTestRunner;
 
 class DatadirTestCaseTest extends TestCase
 {
     public function testExpectedSuccess(): void
     {
         $test = $this->getTestCase('001-successful');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
-
+        $test->setUp();
+        $result = TestExecutionResult::runTest(fn() => $test->testDatadir($this->getSpecification('001-successful')));
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
-
         $this->assertEquals(0, $result->failureCount());
-
         $this->assertEquals(0, $result->skippedCount());
-
-        $this->assertCount(1, $result);
     }
+
     public function testExpectedFail(): void
     {
         $test = $this->getTestCase('002-expected-fail');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
-
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('002-expected-fail')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
-
         $this->assertEquals(0, $result->failureCount());
-
         $this->assertEquals(0, $result->skippedCount());
-
-        $this->assertCount(1, $result);
     }
+
     public function testUnexpectedFailure(): void
     {
-
         $test = $this->getTestCase('003-unexpected-failure');
-        $result = $test->run();
+        $test->setUp();
 
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
-
-        $this->assertEquals(0, $result->errorCount());
-
-        $this->assertEquals(1, $result->failureCount());
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        $failure = $failures[0];
-        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertStringContainsString('-0', $failure->getExceptionAsString(), 'Expected code was not 0');
-        $this->assertStringContainsString('+2', $failure->getExceptionAsString(), 'Actal code was not 2');
-
-        $this->assertEquals(0, $result->skippedCount());
-
-        $this->assertCount(1, $result);
+        try {
+            $test->testDatadir($this->getSpecification('003-unexpected-failure'));
+            $this->fail('Expected ExpectationFailedException was not thrown');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting exit code', $e->getMessage());
+            $comparisonFailure = $e->getComparisonFailure();
+            $this->assertNotNull($comparisonFailure);
+            $diff = $comparisonFailure->getDiff();
+            $this->assertStringContainsString('-0', $diff, 'Expected code was not 0');
+            $this->assertStringContainsString('+2', $diff, 'Actual code was not 2');
+        }
     }
+
     public function testUnexpectedSuccess(): void
     {
         $test = $this->getTestCase('004-unexpected-success');
-        $result = $test->run();
+        $test->setUp();
 
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
-
-        $this->assertEquals(0, $result->errorCount());
-
-        $this->assertEquals(1, $result->failureCount());
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        $failure = $failures[0];
-        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertStringContainsString('-1', $failure->getExceptionAsString(), 'Expected should be 1');
-        $this->assertStringContainsString('+0', $failure->getExceptionAsString(), 'Actual should be 0');
-
-        $this->assertEquals(0, $result->skippedCount());
-
-        $this->assertCount(1, $result);
+        try {
+            $test->testDatadir($this->getSpecification('004-unexpected-success'));
+            $this->fail('Expected ExpectationFailedException was not thrown');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting exit code', $e->getMessage());
+            $comparisonFailure = $e->getComparisonFailure();
+            $this->assertNotNull($comparisonFailure);
+            $diff = $comparisonFailure->getDiff();
+            $this->assertStringContainsString('-1', $diff, 'Expected should be 1');
+            $this->assertStringContainsString('+0', $diff, 'Actual should be 0');
+        }
     }
 
     public function testExpectedUserError(): void
     {
         $test = $this->getTestCase('005-expected-user-error');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('005-expected-user-error')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testExpectedInternalError(): void
     {
         $test = $this->getTestCase('006-expected-internal-error');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('006-expected-internal-error')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testExpectedUserErrorWithOutputFolder(): void
     {
         $test = $this->getTestCase('007-expected-user-error-with-output-folder');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('007-expected-user-error-with-output-folder')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testUnexpectedInternalError(): void
     {
         $test = $this->getTestCase('008-unexpected-internal-error-instead-of-user-error');
-        $result = $test->run();
+        $test->setUp();
 
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
-        $this->assertEquals(0, $result->errorCount());
-        $this->assertEquals(1, $result->failureCount());
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        /** @var TestFailure $failure */
-        $failure = $failures[0];
-        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertStringContainsString(
-            '-1',
-            $failure->getExceptionAsString(),
-            'Expected exit code should have been 1',
-        );
-        $this->assertStringContainsString(
-            '+2',
-            $failure->getExceptionAsString(),
-            'Actual exit code should have been 2',
-        );
-
-        $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
+        try {
+            $test->testDatadir($this->getSpecification('008-unexpected-internal-error-instead-of-user-error'));
+            $this->fail('Expected ExpectationFailedException was not thrown');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting exit code', $e->getMessage());
+            $comparisonFailure = $e->getComparisonFailure();
+            $this->assertNotNull($comparisonFailure);
+            $diff = $comparisonFailure->getDiff();
+            $this->assertStringContainsString(
+                '-1',
+                $diff,
+                'Expected exit code should have been 1',
+            );
+            $this->assertStringContainsString(
+                '+2',
+                $diff,
+                'Actual exit code should have been 2',
+            );
+        }
     }
 
     public function testUnexpectedUserError(): void
     {
         $test = $this->getTestCase('009-unexpected-user-error-instead-of-internal-error');
-        $result = $test->run();
+        $test->setUp();
 
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
-        $this->assertEquals(0, $result->errorCount());
-        $this->assertEquals(1, $result->failureCount());
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        /** @var TestFailure $failure */
-        $failure = $failures[0];
-        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertStringContainsString(
-            '-2',
-            $failure->getExceptionAsString(),
-            'Expected exit code should have been 2',
-        );
-        $this->assertStringContainsString(
-            '+1',
-            $failure->getExceptionAsString(),
-            'Actual exit code should have been 1',
-        );
-
-        $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
+        try {
+            $test->testDatadir($this->getSpecification('009-unexpected-user-error-instead-of-internal-error'));
+            $this->fail('Expected ExpectationFailedException was not thrown');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting exit code', $e->getMessage());
+            $comparisonFailure = $e->getComparisonFailure();
+            $this->assertNotNull($comparisonFailure);
+            $diff = $comparisonFailure->getDiff();
+            $this->assertStringContainsString(
+                '-2',
+                $diff,
+                'Expected exit code should have been 2',
+            );
+            $this->assertStringContainsString(
+                '+1',
+                $diff,
+                'Actual exit code should have been 1',
+            );
+        }
     }
 
     public function testUnexpectedSuccessWithExplicitlyExpectedError(): void
     {
         $test = $this->getTestCase('011-unexpected-success-with-explicitly-expected-exit-code');
-        $result = $test->run();
+        $test->setUp();
 
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
-        $this->assertEquals(0, $result->errorCount());
-        $this->assertEquals(1, $result->failureCount());
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        /** @var TestFailure $failure */
-        $failure = $failures[0];
-        $this->assertStringContainsString('Failed asserting exit code', $failure->exceptionMessage());
-        $this->assertStringContainsString(
-            '-1',
-            $failure->getExceptionAsString(),
-            'Expected exit code should have been 1',
-        );
-        $this->assertStringContainsString(
-            '+0',
-            $failure->getExceptionAsString(),
-            'Actual exit code should have been 0',
-        );
-
-        $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
+        try {
+            $test->testDatadir($this->getSpecification('011-unexpected-success-with-explicitly-expected-exit-code'));
+            $this->fail('Expected ExpectationFailedException was not thrown');
+        } catch (ExpectationFailedException $e) {
+            $this->assertStringContainsString('Failed asserting exit code', $e->getMessage());
+            $comparisonFailure = $e->getComparisonFailure();
+            $this->assertNotNull($comparisonFailure);
+            $diff = $comparisonFailure->getDiff();
+            $this->assertStringContainsString(
+                '-1',
+                $diff,
+                'Expected exit code should have been 1',
+            );
+            $this->assertStringContainsString(
+                '+0',
+                $diff,
+                'Actual exit code should have been 0',
+            );
+        }
     }
 
     public function testInvalidExpectedExitCode(): void
@@ -223,114 +207,110 @@ class DatadirTestCaseTest extends TestCase
         $this->getTestCase('012-neither-code-or-folder');
     }
 
-
     public function testExpectedStdoutMatch(): void
     {
         $test = $this->getTestCase('013-expected-stdout-match');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('013-expected-stdout-match')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testExpectedStdoutNotMatch(): void
     {
         $test = $this->getTestCase('014-expected-stdout-not-match');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('014-expected-stdout-not-match')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_FAILURE, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(1, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
-
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        /** @var TestFailure $failure */
-        $failure = $failures[0];
-        $error = $failure->getExceptionAsString();
+        $error = $result->getExceptionMessage();
         $this->assertStringContainsString('Failed asserting stdout output', $error);
         $this->assertStringContainsString('Failed asserting that string matches format description', $error);
-        $this->assertStringContainsString("-another message\n", $error);
-        $this->assertStringContainsString("+stdout message '12345'\n", $error);
+        $this->assertStringContainsString('another message', $error);
+        $this->assertStringContainsString('stdout message \'12345\'', $error);
     }
 
     public function testExpectedStderrMatch(): void
     {
         $test = $this->getTestCase('015-expected-stderr-match');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('015-expected-stderr-match')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testExpectedStderrNotMatch(): void
     {
         $test = $this->getTestCase('016-expected-stderr-not-match');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_FAILURE, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('016-expected-stderr-not-match')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_FAILURE, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(1, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
-
-        /** @var TestFailure[] $failures */
-        $failures = $result->failures();
-        /** @var TestFailure $failure */
-        $failure = $failures[0];
-        $error = $failure->getExceptionAsString();
+        $error = $result->getExceptionMessage();
         $this->assertStringContainsString('Failed asserting stderr output', $error);
         $this->assertStringContainsString('Failed asserting that string matches format description', $error);
-        $this->assertStringContainsString("-another message\n", $error);
-        $this->assertStringContainsString("+stderr message '12345'\n", $error);
+        $this->assertStringContainsString('another message', $error);
+        $this->assertStringContainsString('stderr message \'12345\'', $error);
     }
 
     public function testModifyConfig(): void
     {
         putenv('MY_TEST_VAR_123=some simple message');
         $test = $this->getTestCase('017-modify-config');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_PASSED, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('017-modify-config')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_PASSED, $result->getStatus());
         $this->assertEquals(0, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
-        $this->assertCount(1, $result);
     }
 
     public function testInvalidConfig(): void
     {
         $test = $this->getTestCase('018-invalid-config');
-        $result = $test->run();
-
-        $this->assertEquals(BaseTestRunner::STATUS_ERROR, $test->getStatus());
+        $test->setUp();
+        $result = TestExecutionResult::runTest(
+            fn() => $test->testDatadir($this->getSpecification('018-invalid-config')),
+        );
+        $this->assertEquals(TestExecutionResult::STATUS_ERROR, $result->getStatus());
         $this->assertEquals(1, $result->errorCount());
         $this->assertEquals(0, $result->failureCount());
         $this->assertEquals(0, $result->skippedCount());
+        $error = $result->getExceptionMessage();
+        $this->assertStringContainsString('Cannot decode "config.json"', $error);
+        $this->assertStringContainsString('Syntax error', $error);
+    }
 
-        $errors = $result->errors();
-        $error = $errors[0];
-        $error = $error->getExceptionAsString();
-        $this->assertStringContainsString(
-            'Keboola\DatadirTests\Exception\DatadirTestsException: ' .
-            'Cannot decode "config.json", dataset "functional": Syntax error',
-            $error,
-        );
+    protected function getSpecification(string $path): DatadirTestSpecificationInterface
+    {
+        $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider(__DIR__ . '/../functional/' . $path);
+        $data = $datadirTestsFromDirectoryProvider();
+        return $data['functional'][0];
     }
 
     protected function getTestCase(string $path): DatadirTestCase
     {
         $datadirTestsFromDirectoryProvider = new DatadirTestsFromDirectoryProvider(__DIR__ . '/../functional/' . $path);
-        $data = $datadirTestsFromDirectoryProvider();
-        return new class('testDatadir', $data['functional'], 'functional') extends DatadirTestCase
-        {
+        $datadirTestsFromDirectoryProvider();
+        return new class ('testDatadir') extends DatadirTestCase {
             protected function getScript(): string
             {
                 return __DIR__ . '/../functional/dummy-app.php';

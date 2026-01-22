@@ -13,10 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - phpVersion: '7.4'
-            symfonyVersion: '5.4.*'
-          - phpVersion: '8.1'
-            symfonyVersion: '6.4.*'
           - phpVersion: '8.2'
             symfonyVersion: '6.4.*'
           - phpVersion: '8.2'
@@ -24,6 +20,10 @@ jobs:
           - phpVersion: '8.3'
             symfonyVersion: '6.4.*'
           - phpVersion: '8.3'
+            symfonyVersion: '7.2.*'
+          - phpVersion: '8.4'
+            symfonyVersion: '6.4.*'
+          - phpVersion: '8.4'
             symfonyVersion: '7.2.*'
 
     steps:
